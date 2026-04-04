@@ -25,7 +25,7 @@ int connect_listen::dispatch(net_event& event) {
         svr_->add_connect(conn);
         conn->get_socket()->set_fd_non_block();
         auto poller_imp = svr_->get_poller();
-        poller_imp->add_event(fd, static_cast<int>(net_event_type::EVENT_READ), false);
+        poller_imp->add_event(fd, static_cast<int>(net_event_type::EVENT_READ), false, socket_.get());
     }
 
     return -1;

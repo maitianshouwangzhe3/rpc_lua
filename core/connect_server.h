@@ -7,7 +7,7 @@
 class connect_server final: public connect {
 public:
     connect_server();
-    connect_server(std::shared_ptr<socket> socket);
+    connect_server(std::shared_ptr<socket> sock);
     ~connect_server();
 
     virtual int dispatch(net_event& event) override;

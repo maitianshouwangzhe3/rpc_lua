@@ -1,28 +1,20 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(rpc_lua)
+project(rpc_lua C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_C_STANDARD 11)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
 endif()
 
 set(LUA_DIR ${PROJECT_SOURCE_DIR}/3rd/lua)
-set(LUA_INC ${LUA_DIR})
-set(LUA_LIBPATH ${LUA_INC})
-
 set(LUNA_DIR ${PROJECT_SOURCE_DIR}/3rd/luna)
-set(LUNA_INC ${LUNA_DIR})
-set(LUNA_LIBPATH ${LUNA_DIR})
 
-set(RPC_LUA_INC_BASE ${PROJECT_SOURCE_DIR}/core)
-
-# aux_source_directory(${PROJECT_SOURCE_DIR}/core RPC_LUA_SRC_FILES)
 set(SRC_FILE_DIR ${PROJECT_SOURCE_DIR}/core)
 
-set(
-    RPC_LUA_SRC_FILES
+set(RPC_LUA_SRC_FILES
     ${SRC_FILE_DIR}/socket.cc
     ${SRC_FILE_DIR}/server.cc
     ${SRC_FILE_DIR}/rpc_lua.cc
@@ -36,21 +28,35 @@ set(
     ${SRC_FILE_DIR}/lfs.c
 )
 
-set(
-    RPC_LUA_CORE
-    ${RPC_LUA_SRC_FILES}
-)
-
-set(
-    RPC_LUA_INC
-    ${RPC_LUA_INC_BASE}
-    ${LUA_INC}
-    ${LUNA_INC}
-)
-
 add_library(rpc SHARED ${RPC_LUA_SRC_FILES})
-# add_executable(rpc ${RPC_LUA_SRC_FILES})
-add_dependencies(rpc lua_ext luna_ext)
+
 set_target_properties(rpc PROPERTIES PREFIX "")
-target_include_directories(rpc PRIVATE ${RPC_LUA_INC})
-target_link_libraries(rpc PRIVATE ${LUA_LIBPATH}/liblua.a ${LUNA_LIBPATH}/libluna.a)
+
+target_include_directories(rpc PRIVATE
+    ${SRC_FILE_DIR}
+    ${LUA_DIR}
+    ${LUNA_DIR}
+)
+
+if(WIN32)
+    target_compile_definitions(rpc PRIVATE
+        _CRT_SECURE_NO_WARNINGS
+        _WIN32_WINNT=0x0601
+    )
+    target_link_libraries(rpc PRIVATE ws2_32 mswsock)
+else()
+    find_library(DL_LIB dl)
+    if(DL_LIB)
+        target_link_libraries(rpc PRIVATE ${DL_LIB})
+    endif()
+endif()
+
+if(LUA_LIBRARIES)
+    target_link_libraries(rpc PRIVATE ${LUA_LIBRARIES})
+endif()
+
+if(WIN32 AND BUILD_SHARED_LIBS)
+    set_target_properties(rpc PROPERTIES
+        WINDOWS_EXPORT_ALL_SYMBOLS ON
+    )
+endif()

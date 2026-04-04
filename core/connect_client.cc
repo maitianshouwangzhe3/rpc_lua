@@ -13,8 +13,8 @@ connect_client::connect_client(int fd): svr_(nullptr) {
     socket_ = std::make_shared<socket>(fd);
 }
 
-connect_client::connect_client(std::shared_ptr<socket> socket): svr_(nullptr) {
-    this->socket_ = socket;
+connect_client::connect_client(std::shared_ptr<socket> sock): svr_(nullptr) {
+    this->socket_ = sock;
 }
 
 connect_client::~connect_client() {

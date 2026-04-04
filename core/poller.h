@@ -3,8 +3,10 @@
 #include <vector>
 #include <cstdint>
 
+class socket;
+
 enum class net_event_type {
-    EVENT_READ = 1 << 1,
+    EVENT_READ  = 1 << 1,
     EVENT_WRITE = 1 << 2,
     EVENT_RDHUP = 1 << 3
 };
@@ -25,7 +27,7 @@ public:
 
     int poll(std::vector<net_event>& evs, int time_out = -1);
 
-    int add_event(int fd, int event, bool iset = true);
+    int add_event(int fd, int event, bool iset = true, void* ptr = nullptr);
 
     int mod_event(int fd, int event, bool iset = true);
 
@@ -33,6 +35,11 @@ public:
 
 private:
     uint32_t add_event(int event, bool iset);
-private:
+
+#ifdef _WIN32
+    struct iocp_state;
+    iocp_state* state_;
+#else
     int epfd_;
+#endif
 };

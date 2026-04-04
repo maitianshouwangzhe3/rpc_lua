@@ -1,13 +1,15 @@
 
-
 #include "connect_server.h"
 
+#ifdef _WIN32
+#include <winsock2.h>
+#endif
 #include <cerrno>
 connect_server::connect_server(): svr_(nullptr) {
 
 }
 
-connect_server::connect_server(std::shared_ptr<socket> socket): socket_(socket), svr_(nullptr) {
+connect_server::connect_server(std::shared_ptr<socket> sock): socket_(sock), svr_(nullptr) {
     // socket_->set_fd_non_block();
 }
 
@@ -60,7 +62,11 @@ int connect_server::connect(const char* ip, int port) {
     statu_ = tatus::CONNECTING;
     int ret = socket_->connect(ip, port);
     if (ret == -1) {
+#ifdef _WIN32
+        if (WSAGetLastError() == WSAEWOULDBLOCK) {
+#else
         if (errno == EINPROGRESS) {
+#endif
             
         } else {
             statu_ = tatus::ERROR;

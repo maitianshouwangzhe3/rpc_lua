@@ -57,12 +57,15 @@ public:
 
     virtual std::shared_ptr<chain_buffer> get_wbuffer();
 
+    void set_iocp(bool v) { is_iocp_ = v; }
+
     virtual int check_sep_rbuffer(const char* sep, const int seplen);
 
     void init(protocol proto);
 private:
     int fd_;
     protocol proto_;
+    bool is_iocp_ = false;
 
     std::shared_ptr<chain_buffer> rbuffer;
     std::shared_ptr<chain_buffer> wbuffer;

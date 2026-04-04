@@ -8,7 +8,7 @@ class connect_client final: public connect {
 public:
     connect_client();
     connect_client(int fd);
-    connect_client(std::shared_ptr<socket> socket);
+    connect_client(std::shared_ptr<socket> sock);
     ~connect_client();
 
     virtual int dispatch(net_event& event) override;

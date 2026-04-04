@@ -4,7 +4,7 @@
 #include "connect.h"
 
 #include <memory>
-#include <vector>
+#include <unordered_map>
 
 class poller;
 struct lua_State;
@@ -40,5 +40,5 @@ private:
     bool is_stop_;
     callback_context* callback_ctx_;
     std::shared_ptr<poller> poller_;
-    std::vector<std::shared_ptr<connect>> connect_pool_;
+    std::unordered_map<int, std::shared_ptr<connect>> connect_pool_;
 };
