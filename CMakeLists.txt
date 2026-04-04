@@ -36,32 +36,6 @@ set(
     ${SRC_FILE_DIR}/lfs.c
 )
 
-include(ExternalProject)
-
-# 构建 Lua
-ExternalProject_Add(lua_ext
-    PREFIX ${PROJECT_SOURCE_DIR}/3rd/lua
-    SOURCE_DIR ${PROJECT_SOURCE_DIR}/3rd/lua
-    PATCH_COMMAND ${CMAKE_COMMAND} -E echo "Adding -fPIC to CFLAGS"
-    COMMAND sed -i "s/CFLAGS= -Wall -O2/CFLAGS= -Wall -O2 -fPIC/" makefile
-    CONFIGURE_COMMAND ""
-    BUILD_COMMAND make -j1
-    INSTALL_COMMAND ""
-    BUILD_IN_SOURCE 1
-)
-
-# 构建 Luna
-ExternalProject_Add(luna_ext
-    PREFIX ${PROJECT_SOURCE_DIR}/3rd/luna
-    SOURCE_DIR ${PROJECT_SOURCE_DIR}/3rd/luna
-    PATCH_COMMAND ${CMAKE_COMMAND} -E echo "Adding -fPIC to CFLAGS"
-    COMMAND sed -i "s#CFLAGS =#CFLAGS= -fPIC -I ../lua -L ../lua#" makefile
-    CONFIGURE_COMMAND ""
-    BUILD_COMMAND make -j1 target_type=static_shared
-    INSTALL_COMMAND ""
-    BUILD_IN_SOURCE 1
-)
-
 set(
     RPC_LUA_CORE
     ${RPC_LUA_SRC_FILES}
