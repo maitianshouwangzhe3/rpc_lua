@@ -14,6 +14,10 @@ set(LUNA_DIR ${PROJECT_SOURCE_DIR}/3rd/luna)
 
 set(SRC_FILE_DIR ${PROJECT_SOURCE_DIR}/core)
 
+link_directories(${CMAKE_CURRENT_SOURCE_DIR}/3rd/lua ${CMAKE_CURRENT_SOURCE_DIR}/3rd/luna)
+set(LUA_LIB liblua)
+set(LUNA_LIB libluna)
+
 set(RPC_LUA_SRC_FILES
     ${SRC_FILE_DIR}/socket.cc
     ${SRC_FILE_DIR}/server.cc
@@ -43,7 +47,7 @@ if(WIN32)
         _CRT_SECURE_NO_WARNINGS
         _WIN32_WINNT=0x0601
     )
-    target_link_libraries(rpc PRIVATE ws2_32 mswsock)
+    target_link_libraries(rpc PRIVATE ws2_32 mswsock ${LUA_LIB} ${LUNA_LIB})
 else()
     find_library(DL_LIB dl)
     if(DL_LIB)
