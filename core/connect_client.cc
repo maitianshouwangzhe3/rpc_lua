@@ -10,10 +10,10 @@ connect_client::connect_client(): svr_(nullptr) {
 
 }
 connect_client::connect_client(int fd): svr_(nullptr) {
-    socket_ = std::make_shared<socket>(fd);
+    socket_ = std::make_shared<rpc_lua::socket>(fd);
 }
 
-connect_client::connect_client(std::shared_ptr<socket> sock): svr_(nullptr) {
+connect_client::connect_client(std::shared_ptr<rpc_lua::socket> sock): svr_(nullptr) {
     this->socket_ = sock;
 }
 
@@ -76,7 +76,7 @@ int connect_client::send_data(char* data, int len) {
     return socket_->get_wbuffer()->buffer_add(data, len);
 }
 
-std::shared_ptr<socket> connect_client::get_socket() {
+std::shared_ptr<rpc_lua::socket> connect_client::get_socket() {
     return socket_;
 }
 

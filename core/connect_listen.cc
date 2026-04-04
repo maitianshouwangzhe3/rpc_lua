@@ -6,7 +6,7 @@
 
 #include <memory>
 connect_listen::connect_listen(protocol protocol): svr_(nullptr) {
-    socket_ = std::make_shared<socket>(protocol);
+    socket_ = std::make_shared<rpc_lua::socket>(protocol);
 }
 
 connect_listen::~connect_listen() {
@@ -35,7 +35,7 @@ int connect_listen::on_accept_message() {
     return socket_->accept();
 }
 
-std::shared_ptr<socket> connect_listen::get_socket() {
+std::shared_ptr<rpc_lua::socket> connect_listen::get_socket() {
     return socket_;
 }
 

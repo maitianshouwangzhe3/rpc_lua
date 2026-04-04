@@ -9,64 +9,67 @@ enum class protocol {
     UDP
 };
 
-class socket final{
-public:
-    socket();
-    socket(int fd);
-    socket(protocol proto);
-    socket(int fd, protocol proto);
-    ~socket();
+namespace rpc_lua {
+    class socket final{
+    public:
+        socket();
+        socket(int fd);
+        socket(protocol proto);
+        socket(int fd, protocol proto);
+        ~socket();
 
-    virtual bool bind(int port);
+        virtual bool bind(int port);
 
-    virtual bool bind(const std::string& ip, int port);
+        virtual bool bind(const std::string& ip, int port);
 
-    virtual int listen();
+        virtual int listen();
 
-    virtual void close();
+        virtual void close();
 
-    virtual void set_fd_non_block();
+        virtual void set_fd_non_block();
 
-    virtual int recv();
+        virtual int recv();
 
-    virtual int read();
+        virtual int read();
 
-    virtual int rbuffer_len();
+        virtual int rbuffer_len();
 
-    virtual int put(void* data, uint32_t datlen);
+        virtual int put(void* data, uint32_t datlen);
 
-    virtual int send();
+        virtual int send();
 
-    virtual int wbuffer_len();
+        virtual int wbuffer_len();
 
-    virtual int push(void* data, uint32_t datlen);
+        virtual int push(void* data, uint32_t datlen);
 
-    virtual int get_fd();
+        virtual int get_fd();
 
-    virtual int accept();
+        virtual int accept();
 
-    virtual int set_socket(int fd);
+        virtual int set_socket(int fd);
 
-    virtual int create_socket();
+        virtual int create_socket();
 
-    virtual int connect(const char* ip, int port);
+        virtual int connect(const char* ip, int port);
 
-    virtual int no_delay();
+        virtual int no_delay();
 
-    virtual std::shared_ptr<chain_buffer> get_rbuffer();
+        virtual std::shared_ptr<chain_buffer> get_rbuffer();
 
-    virtual std::shared_ptr<chain_buffer> get_wbuffer();
+        virtual std::shared_ptr<chain_buffer> get_wbuffer();
 
-    void set_iocp(bool v) { is_iocp_ = v; }
+        void set_iocp(bool v) { is_iocp_ = v; }
 
-    virtual int check_sep_rbuffer(const char* sep, const int seplen);
+        virtual int check_sep_rbuffer(const char* sep, const int seplen);
 
-    void init(protocol proto);
-private:
-    int fd_;
-    protocol proto_;
-    bool is_iocp_ = false;
+        void init(protocol proto);
+    private:
+        int fd_;
+        protocol proto_;
+        bool is_iocp_ = false;
 
-    std::shared_ptr<chain_buffer> rbuffer;
-    std::shared_ptr<chain_buffer> wbuffer;
-};
+        std::shared_ptr<chain_buffer> rbuffer;
+        std::shared_ptr<chain_buffer> wbuffer;
+    };
+}
+

@@ -9,7 +9,7 @@ connect_server::connect_server(): svr_(nullptr) {
 
 }
 
-connect_server::connect_server(std::shared_ptr<socket> sock): socket_(sock), svr_(nullptr) {
+connect_server::connect_server(std::shared_ptr<rpc_lua::socket> sock): socket_(sock), svr_(nullptr) {
     // socket_->set_fd_non_block();
 }
 
@@ -50,7 +50,7 @@ int connect_server::dispatch(net_event& event) {
     return 0;
 }
 
-std::shared_ptr<socket> connect_server::get_socket() {
+std::shared_ptr<rpc_lua::socket> connect_server::get_socket() {
     return socket_;
 }
 

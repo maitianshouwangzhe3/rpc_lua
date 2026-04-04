@@ -18,7 +18,7 @@ struct iocp_per_io {
 
 struct poller::iocp_state {
     HANDLE iocp_handle;
-    std::unordered_map<int, socket*> socket_map;
+    std::unordered_map<int, rpc_lua::socket*> socket_map;
 };
 
 static int g_wsa_init_count = 0;
@@ -41,7 +41,7 @@ static void iocp_post_recv(HANDLE iocp, SOCKET s) {
     }
 }
 
-static void iocp_post_send(HANDLE iocp, SOCKET s, socket* sock) {
+static void iocp_post_send(HANDLE iocp, SOCKET s, rpc_lua::socket* sock) {
     auto wbuf = sock->get_wbuffer();
     int len = wbuf->buffer_len();
     if (len <= 0) return;
@@ -94,7 +94,7 @@ uint32_t poller::add_event(int event, bool iset) {
 }
 
 int poller::add_event(int fd, int event, bool iset, void* ptr) {
-    socket* sock = reinterpret_cast<socket*>(ptr);
+    rpc_lua::socket* sock = reinterpret_cast<rpc_lua::socket*>(ptr);
     SOCKET s = (SOCKET)fd;
 
     CreateIoCompletionPort((HANDLE)s, state_->iocp_handle, (ULONG_PTR)fd, 0);
@@ -158,7 +158,7 @@ int poller::poll(std::vector<net_event>& evs, int time_out) {
                 event_map[fd] |= static_cast<int>(net_event_type::EVENT_RDHUP);
                 delete pio;
             } else {
-                socket* sock = it->second;
+                rpc_lua::socket* sock = it->second;
                 sock->get_rbuffer()->buffer_add(pio->buffer, bytes);
                 event_map[fd] |= static_cast<int>(net_event_type::EVENT_READ);
                 iocp_post_recv(state_->iocp_handle, (SOCKET)fd);

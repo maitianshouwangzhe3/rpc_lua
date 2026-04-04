@@ -36,7 +36,7 @@ std::string client::invoke(const char* request, int len) {
 }
 
 int client::init(std::string ip, int port) {
-    std::shared_ptr<socket> sock = std::make_shared<socket>();
+    std::shared_ptr<rpc_lua::socket> sock = std::make_shared<rpc_lua::socket>();
     
     int ret = sock->connect(ip.data(), port);
     if (ret != 0) {

@@ -3,7 +3,9 @@
 #include <vector>
 #include <cstdint>
 
-class socket;
+namespace rpc_lua {
+    class socket;
+}
 
 enum class net_event_type {
     EVENT_READ  = 1 << 1,

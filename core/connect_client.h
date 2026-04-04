@@ -8,7 +8,7 @@ class connect_client final: public connect {
 public:
     connect_client();
     connect_client(int fd);
-    connect_client(std::shared_ptr<socket> sock);
+    connect_client(std::shared_ptr<rpc_lua::socket> sock);
     ~connect_client();
 
     virtual int dispatch(net_event& event) override;
@@ -17,7 +17,7 @@ public:
 
     int send_data(char* data, int len);
 
-    virtual std::shared_ptr<socket> get_socket() override;
+    virtual std::shared_ptr<rpc_lua::socket> get_socket() override;
 
     virtual int close() override;
 
@@ -37,5 +37,5 @@ private:
 
 private:
     server* svr_;
-    std::shared_ptr<socket> socket_;
+    std::shared_ptr<rpc_lua::socket> socket_;
 };

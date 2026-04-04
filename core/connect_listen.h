@@ -12,7 +12,7 @@ public:
 
     virtual int dispatch(net_event& event) override;
 
-    virtual std::shared_ptr<socket> get_socket() override;
+    virtual std::shared_ptr<rpc_lua::socket> get_socket() override;
 
     virtual int close() override;
 
@@ -27,5 +27,5 @@ private:
 
 private:
     server* svr_;
-    std::shared_ptr<socket> socket_;
+    std::shared_ptr<rpc_lua::socket> socket_;
 };

@@ -6,34 +6,34 @@
 #include <cerrno>
 #include <cstring>
 
-socket::socket() {
+rpc_lua::socket::socket() {
     init(protocol::TCP);
     rbuffer = std::make_shared<chain_buffer>();
     wbuffer = std::make_shared<chain_buffer>();
 }
 
-socket::~socket() {
+rpc_lua::socket::~socket() {
 
 }
 
-socket::socket(int fd): fd_(fd) {
+rpc_lua::socket::socket(int fd): fd_(fd) {
     rbuffer = std::make_shared<chain_buffer>();
     wbuffer = std::make_shared<chain_buffer>();
 }
 
-socket::socket(protocol proto) {
+rpc_lua::socket::socket(protocol proto) {
     init(proto);
     rbuffer = std::make_shared<chain_buffer>();
     wbuffer = std::make_shared<chain_buffer>();
 }
 
-socket::socket(int fd, protocol proto): fd_(fd) {
+rpc_lua::socket::socket(int fd, protocol proto): fd_(fd) {
     init(proto);
     rbuffer = std::make_shared<chain_buffer>();
     wbuffer = std::make_shared<chain_buffer>();
 }
 
-bool socket::bind(int port) {
+bool rpc_lua::socket::bind(int port) {
     if (fd_ <= 0) {
         return false;
     }
@@ -47,7 +47,7 @@ bool socket::bind(int port) {
 }
 
 // 新增：支持 IP 和端口绑定的方法
-bool socket::bind(const std::string& ip, int port) {
+bool rpc_lua::socket::bind(const std::string& ip, int port) {
     if (fd_ <= 0) {
         return false;
     }
@@ -60,7 +60,7 @@ bool socket::bind(const std::string& ip, int port) {
     return ::bind((net_socket_t)fd_, (struct sockaddr *)&addr, sizeof(addr)) == 0;
 }
 
-int socket::listen() {
+int rpc_lua::socket::listen() {
     if (fd_ <= 0) {
         return -1;
     }
@@ -68,14 +68,14 @@ int socket::listen() {
     return ::listen((net_socket_t)fd_, 5);
 }
 
-void socket::close() {
+void rpc_lua::socket::close() {
     if (fd_ > 0) {
         NET_CLOSE_SOCKET((net_socket_t)fd_);
         fd_ = -1;
     }
 }
 
-void socket::set_fd_non_block() {
+void rpc_lua::socket::set_fd_non_block() {
 #ifdef _WIN32
     u_long mode = 1;
     ioctlsocket((SOCKET)fd_, FIONBIO, &mode);
@@ -85,7 +85,7 @@ void socket::set_fd_non_block() {
 #endif
 }
 
-int socket::recv() {
+int rpc_lua::socket::recv() {
     // IOCP 模式下，数据已由完成端口放入 rbuffer
     if (is_iocp_) {
         return rbuffer->buffer_len();
@@ -125,7 +125,7 @@ int socket::recv() {
     return ret;
 }
 
-int socket::read() {
+int rpc_lua::socket::read() {
     // IOCP 模式下，数据已由完成端口放入 rbuffer
     if (is_iocp_) {
         return rbuffer->buffer_len();
@@ -154,19 +154,19 @@ int socket::read() {
     return ret;
 }
 
-int socket::wbuffer_len() {
+int rpc_lua::socket::wbuffer_len() {
     return wbuffer->buffer_len();
 }
 
-int socket::rbuffer_len() {
+int rpc_lua::socket::rbuffer_len() {
     return rbuffer->buffer_len();
 }
 
-int socket::put(void* data, uint32_t datlen) {
+int rpc_lua::socket::put(void* data, uint32_t datlen) {
     return rbuffer->buffer_remove(data, datlen);
 }
 
-int socket::send() {
+int rpc_lua::socket::send() {
     // IOCP 模式下，发送由完成端口异步处理
     if (is_iocp_) {
         return wbuffer->buffer_len();
@@ -209,15 +209,15 @@ int socket::send() {
     return ret;
 }
 
-int socket::push(void* data, uint32_t datlen) {
+int rpc_lua::socket::push(void* data, uint32_t datlen) {
     return wbuffer->buffer_add(data, datlen);
 }
 
-int socket::get_fd() {
+int rpc_lua::socket::get_fd() {
     return fd_;
 }
 
-int socket::accept() {
+int rpc_lua::socket::accept() {
 #ifdef _WIN32
     SOCKET s = ::accept((SOCKET)fd_, NULL, NULL);
     if (s == INVALID_SOCKET) {
@@ -229,17 +229,17 @@ int socket::accept() {
 #endif
 }
 
-int socket::set_socket(int fd) {
+int rpc_lua::socket::set_socket(int fd) {
     fd_ = fd;
     return fd_;
 }
 
-int socket::create_socket() {
+int rpc_lua::socket::create_socket() {
     init(proto_);
     return fd_;
 }
 
-int socket::connect(const char* ip, int port) {
+int rpc_lua::socket::connect(const char* ip, int port) {
     struct sockaddr_in addr;
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
@@ -249,7 +249,7 @@ int socket::connect(const char* ip, int port) {
     return ::connect((net_socket_t)fd_, (const struct sockaddr*)&addr, len);
 }
 
-int socket::no_delay() {
+int rpc_lua::socket::no_delay() {
     int value = 1;
     return setsockopt((net_socket_t)fd_, IPPROTO_TCP, TCP_NODELAY,
 #ifdef _WIN32
@@ -260,7 +260,7 @@ int socket::no_delay() {
         sizeof(value));
 }
 
-void socket::init(protocol proto) {
+void rpc_lua::socket::init(protocol proto) {
     int type = -1;
     switch (proto) {
         case protocol::TCP:
@@ -282,14 +282,14 @@ void socket::init(protocol proto) {
 #endif
 }
 
-std::shared_ptr<chain_buffer> socket::get_rbuffer() {
+std::shared_ptr<chain_buffer> rpc_lua::socket::get_rbuffer() {
     return rbuffer;
 }
 
-std::shared_ptr<chain_buffer> socket::get_wbuffer() {
+std::shared_ptr<chain_buffer> rpc_lua::socket::get_wbuffer() {
     return wbuffer;
 }
 
-int socket::check_sep_rbuffer(const char* sep, const int seplen) {
+int rpc_lua::socket::check_sep_rbuffer(const char* sep, const int seplen) {
     return rbuffer->buffer_search(sep, seplen);
 }
