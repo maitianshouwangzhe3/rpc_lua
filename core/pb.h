@@ -38,7 +38,7 @@
 # define PB_API extern
 #endif
 
-#if defined(_MSC_VER) || defined(__UNIXOS2__) || defined(__SOL64__)
+#if (defined(_MSC_VER) || defined(__UNIXOS2__) || defined(__SOL64__)) && !defined(_STDINT_H) && !defined(_STDINT_H_) && !defined(__STDC_VERSION_STDINT_H__)
 typedef unsigned char      uint8_t;
 typedef signed   char       int8_t;
 typedef unsigned short     uint16_t;

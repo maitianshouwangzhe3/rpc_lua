@@ -36,7 +36,7 @@ private:
     enum class tatus {
         CONNECTING = 0,
         CONNECTED,
-        ERROR,
+        DISCONNECTED,
     };
 
     tatus statu_;

@@ -39,7 +39,7 @@ int connect_server::dispatch(net_event& event) {
             }
         }
         break;
-        case tatus::ERROR: {
+        case tatus::DISCONNECTED: {
 
         }
         break;
@@ -69,7 +69,7 @@ int connect_server::connect(const char* ip, int port) {
 #endif
             
         } else {
-            statu_ = tatus::ERROR;
+            statu_ = tatus::DISCONNECTED;
             return -1;
         }
     }
