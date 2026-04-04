@@ -18,11 +18,20 @@ client::~client() {
 }
 
 std::string client::invoke(const char* request, int len) {
+    std::string ret = "";
     connect_->write(const_cast<char*>(request), len);
     int nready = connect_->read();
-    std::string ret = "";
-    ret.reserve(nready);
-    connect_->get_socket()->put(ret.data(), nready);
+    if (nready <= 0) {
+        return ret;
+    }
+
+    uint32_t length = 0;
+    connect_->get_socket()->put((char*)&length, sizeof(length));
+    if (length <= 0) {
+        return ret;
+    }
+    ret.reserve(length);
+    connect_->get_socket()->put(ret.data(), length);
     return ret;
 }
 
