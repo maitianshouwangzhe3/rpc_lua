@@ -4,7 +4,7 @@
 #include "socket.h"
 #include "connect.h"
 
-class connect_listen final: public connect {
+class connect_listen final: public rpc_lua::connect {
 public:
     connect_listen(protocol protocol = protocol::TCP);
 

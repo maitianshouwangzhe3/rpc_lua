@@ -23,13 +23,13 @@ public:
 
     void start(std::string ip, int port);
 
-    void add_connect(std::shared_ptr<connect> conn);
+    void add_connect(std::shared_ptr<rpc_lua::connect> conn);
 
     void del_connect(int fd);
 
     void call_back(callback_context* ctx);
 
-    void dispatch(connect* conn);
+    void dispatch(rpc_lua::connect* conn);
 
     int push(int fd, const char* data, int len);
 
@@ -42,5 +42,5 @@ private:
     bool is_stop_;
     callback_context* callback_ctx_;
     std::shared_ptr<poller> poller_;
-    std::unordered_map<int, std::shared_ptr<connect>> connect_pool_;
+    std::unordered_map<int, std::shared_ptr<rpc_lua::connect>> connect_pool_;
 };

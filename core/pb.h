@@ -1721,7 +1721,11 @@ PB_NS_END
 #include "lualib.h"
 
 #ifdef rpc_EXPORTS
+#ifdef _WIN32
 #define PB_EXPORT __declspec(dllexport)
+#else
+#define PB_EXPORT
+#endif
 #else
 #define PB_EXPORT
 #endif

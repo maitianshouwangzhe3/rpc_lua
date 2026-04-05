@@ -7,7 +7,7 @@
 #include <winsock2.h>
 #else
 #include <netinet/in.h>
-#endif // _WIN32
+#endif
 
 
 #include <iostream>
@@ -26,7 +26,7 @@ server::~server() {
 
 }
 
-void server::add_connect(std::shared_ptr<connect> conn) {
+void server::add_connect(std::shared_ptr<rpc_lua::connect> conn) {
     int fd = conn->get_socket()->get_fd();
     connect_pool_[fd] = conn;
 }
@@ -87,7 +87,7 @@ void server::step(int timeout) {
 }
 
 int server::init(std::string& ip, int port) {
-    std::shared_ptr<connect> conn = std::make_shared<connect_listen>();
+    std::shared_ptr<rpc_lua::connect> conn = std::make_shared<connect_listen>();
     if (!conn) {
         return -1;
     }
@@ -123,7 +123,7 @@ void server::call_back(callback_context* ctx) {
     callback_ctx_ = ctx;
 }
 
-void server::dispatch(connect* conn) {
+void server::dispatch(rpc_lua::connect* conn) {
     lua_State *L = callback_ctx_->L;
 	int trace = 1;
 	int r;

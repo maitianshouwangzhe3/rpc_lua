@@ -17,5 +17,5 @@ public:
 public:
     DECLARE_LUA_CLASS(client)
 private:
-    std::shared_ptr<connect> connect_;
+    std::shared_ptr<rpc_lua::connect> connect_;
 };

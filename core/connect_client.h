@@ -4,7 +4,7 @@
 #include "socket.h"
 #include "connect.h"
 
-class connect_client final: public connect { 
+class connect_client final: public rpc_lua::connect { 
 public:
     connect_client();
     connect_client(int fd);

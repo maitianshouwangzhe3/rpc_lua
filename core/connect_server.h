@@ -4,7 +4,7 @@
 #include "socket.h"
 #include "connect.h"
 
-class connect_server final: public connect {
+class connect_server final: public rpc_lua::connect {
 public:
     connect_server();
     connect_server(std::shared_ptr<rpc_lua::socket> sock);

@@ -8,7 +8,11 @@ extern "C" {
 }
 
 #ifdef rpc_EXPORTS
+#ifdef _WIN32
 #define RPC_EXPORT __declspec(dllexport)
+#else
+#define RPC_EXPORT
+#endif
 #else
 #define RPC_EXPORT
 #endif
