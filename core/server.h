@@ -25,6 +25,8 @@ public:
 
     void add_connect(std::shared_ptr<connect> conn);
 
+    void del_connect(int fd);
+
     void call_back(callback_context* ctx);
 
     void dispatch(connect* conn);

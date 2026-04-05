@@ -39,11 +39,15 @@ int connect_client::event_write_hander() {
 }
 
 int connect_client::event_rdhup_hander() {
-    return 0;
+    return event_close_hander();
 }
 
 int connect_client::event_close_hander() {
+    int fd = socket_->get_fd();
     socket_->close();
+    if (svr_) {
+        svr_->del_connect(fd);
+    }
     return 0;
 }
 
@@ -57,7 +61,11 @@ int connect_client::dispatch(net_event& event) {
 
         if (event.event & static_cast<uint32_t>(net_event_type::EVENT_WRITE)) {
             (void)event_write_hander();
-            svr_->get_poller()->mod_event(event.fd, static_cast<uint32_t>(net_event_type::EVENT_READ));
+            if (socket_->wbuffer_len() > 0) {
+                svr_->get_poller()->mod_event(event.fd, static_cast<uint32_t>(net_event_type::EVENT_READ) | static_cast<uint32_t>(net_event_type::EVENT_WRITE));
+            } else {
+                svr_->get_poller()->mod_event(event.fd, static_cast<uint32_t>(net_event_type::EVENT_READ));
+            }
         }
     }
 

@@ -27,7 +27,7 @@ public:
     poller();
     ~poller();
 
-    int poll(std::vector<net_event>& evs, int time_out = -1);
+    int poll(std::vector<net_event>& evs, int time_out = 50);
 
     int add_event(int fd, int event, bool iset = true, void* ptr = nullptr);
 
@@ -39,8 +39,8 @@ private:
     uint32_t add_event(int event, bool iset);
 
 #ifdef _WIN32
-    struct iocp_state;
-    iocp_state* state_;
+    struct select_state;
+    select_state* state_;
 #else
     int epfd_;
 #endif

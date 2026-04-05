@@ -7,6 +7,12 @@ extern "C" {
 #include "lauxlib.h"
 }
 
+#ifdef rpc_EXPORTS
+#define RPC_EXPORT __declspec(dllexport)
+#else
+#define RPC_EXPORT
+#endif
+
 #include "server.h"
 #include "client.h"
 
@@ -84,7 +90,7 @@ static int callback(lua_State* L) {
 }
 
 extern "C" {
-LUALIB_API int luaopen_rpc(lua_State* L) {
+RPC_EXPORT LUALIB_API int luaopen_rpc(lua_State* L) {
     luaL_checkversion(L);
     
 	luaL_Reg l[] = {

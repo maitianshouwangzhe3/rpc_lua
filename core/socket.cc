@@ -86,11 +86,6 @@ void rpc_lua::socket::set_fd_non_block() {
 }
 
 int rpc_lua::socket::recv() {
-    // IOCP 模式下，数据已由完成端口放入 rbuffer
-    if (is_iocp_) {
-        return rbuffer->buffer_len();
-    }
-
     int ret = 0;
     do {
         char buffer[4096] = {0};
@@ -105,7 +100,7 @@ int rpc_lua::socket::recv() {
             if (err == WSAEWOULDBLOCK) {
                 break;
             }
-            return -1;
+            return 0;
         }
 #else
         int nready = ::recv(fd_, buffer, 4096, 0);
@@ -126,11 +121,6 @@ int rpc_lua::socket::recv() {
 }
 
 int rpc_lua::socket::read() {
-    // IOCP 模式下，数据已由完成端口放入 rbuffer
-    if (is_iocp_) {
-        return rbuffer->buffer_len();
-    }
-
     int ret = 0;
     do {
         char buffer[4096] = {0};
@@ -167,11 +157,6 @@ int rpc_lua::socket::put(void* data, uint32_t datlen) {
 }
 
 int rpc_lua::socket::send() {
-    // IOCP 模式下，发送由完成端口异步处理
-    if (is_iocp_) {
-        return wbuffer->buffer_len();
-    }
-
     int ret = 0;
     do {
         char buffer[4096] = {0};

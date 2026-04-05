@@ -1719,4 +1719,11 @@ PB_NS_END
 #include "lua.h"
 #include "lauxlib.h"
 #include "lualib.h"
-int luaopen_rpc_pb(lua_State *L);
+
+#ifdef rpc_EXPORTS
+#define PB_EXPORT __declspec(dllexport)
+#else
+#define PB_EXPORT
+#endif
+
+PB_EXPORT int luaopen_rpc_pb(lua_State *L);

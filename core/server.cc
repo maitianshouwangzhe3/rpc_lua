@@ -3,6 +3,13 @@
 #include "poller.h"
 #include "connect_listen.h"
 
+#ifdef _WIN32
+#include <winsock2.h>
+#else
+#include <netinet/in.h>
+#endif // _WIN32
+
+
 #include <iostream>
 
 LUA_EXPORT_CLASS_BEGIN(server)
@@ -24,12 +31,20 @@ void server::add_connect(std::shared_ptr<connect> conn) {
     connect_pool_[fd] = conn;
 }
 
+void server::del_connect(int fd) {
+    poller_->del_event(fd);
+    connect_pool_.erase(fd);
+}
+
 std::shared_ptr<poller> server::get_poller() {
     return poller_;
 }
 
-    void server::start(std::string ip, int port) {
-    init(ip, port);
+void server::start(std::string ip, int port) {
+    int ret = init(ip, port);
+    if (ret != 0) {
+        return;
+    }
     while(!is_stop_) {
         std::vector<net_event> evs;
         int nready = poller_->poll(evs);
@@ -139,9 +154,14 @@ int server::push(int fd, const char* data, int len) {
         return -1;
     }
 
+    char buffer[2048] = { 0 };
+    uint32_t net_len = htonl(len);
+    memcpy(buffer, &net_len, sizeof(net_len));
+    memcpy(buffer + sizeof(net_len), data, len);
+
     auto conn = it->second;
     if (conn) {
-        conn->write(const_cast<char*>(data), len);
+        conn->write(const_cast<char*>(buffer), len);
         poller_->mod_event(fd, static_cast<int>(net_event_type::EVENT_WRITE) | static_cast<int>(net_event_type::EVENT_READ));
         return 0;
     }
