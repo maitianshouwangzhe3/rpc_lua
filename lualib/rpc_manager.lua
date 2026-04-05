@@ -122,7 +122,6 @@ function rpc_manager.dispatch(fd, msg, len)
         return
     end
 
-    print("service name:", service.service_name)
     for key, value in pairs(svr[service.service_name]) do
         print("key:", key, "value:", value)
     end
@@ -149,8 +148,10 @@ function rpc_manager.dispatch(fd, msg, len)
             code = 0,
             result = rsq_1
         })
-        print("len:", len)
-        _G.rpc_server.push(fd, rsq_2, len)
+
+        if _G.rpc_server then
+            _G.rpc_server.push(fd, rsq_2, len)
+        end
     else
         print("service_name not found")
     end

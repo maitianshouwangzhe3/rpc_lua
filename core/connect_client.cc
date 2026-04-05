@@ -97,7 +97,8 @@ void connect_client::set_server(server* svr) {
 }
 
 int connect_client::write(char* data, int len) {
-    return socket_->push(data, len);
+    (void)socket_->push(data, len);
+    return svr_->get_poller()->mod_event(socket_->get_fd(), static_cast<int>(net_event_type::EVENT_WRITE) | static_cast<int>(net_event_type::EVENT_READ));
 }
 
 int connect_client::read() {

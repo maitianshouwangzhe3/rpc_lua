@@ -161,8 +161,7 @@ int server::push(int fd, const char* data, int len) {
 
     auto conn = it->second;
     if (conn) {
-        conn->write(const_cast<char*>(buffer), len);
-        poller_->mod_event(fd, static_cast<int>(net_event_type::EVENT_WRITE) | static_cast<int>(net_event_type::EVENT_READ));
+        conn->write(const_cast<char*>(buffer), len + sizeof(net_len));
         return 0;
     }
 
